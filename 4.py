@@ -69,9 +69,98 @@ arr[5]
 arr[5:8]
 arr[5:8] = 12
 arr
+
 #数组切片是原数组的试图，改变数组切片的值时原数组的对应值也会改变
 arr_slice = arr[5:8]
 arr_slice[1] = 12345
 arr
 arr_slice[:] = 64
 arr
+
+#高维数组的索引
+arr2d = np.array([[1,2,3],[4,5,6],[7,8,9]])
+arr2d[2]
+arr2d[0][2]
+arr2d[0,2]
+
+arr3d = np.array([[[1,2,3],[4,5,6]],[[7,8,9],[10,11,12]]])
+arr3d
+arr3d[0]
+old_values = arr3d[0].copy()
+arr3d[0] = 42
+arr3d
+arr3d[0] = old_values
+arr3d
+
+#切片语法
+arr[1:6]
+arr2d
+arr2d[:2]
+arr2d[:2,1:]
+
+#布尔索引
+names = np.array(['Bob','Joe','Will','Bob','Will','Joe','Joe'])
+data = np.random.randn(7,4)
+names
+data
+names == 'Bob'
+data[names == 'Bob']
+data[names == 'Bob' ,2:]
+data[names == 'Bob' ,3]
+
+names != 'Bob'
+data[names != 'Bob']
+data[names != 'Bob' ,2:]
+data[names != 'Bob' ,3]
+
+data[data<0] = 0
+data
+
+data[names != 'Joe'] = 7
+data
+
+#花式索引
+arr = np.empty((8,4))
+for i in range(8):
+    arr[i] = i
+arr
+arr[[4,3,0,6]] #返回第4，3，0，6行
+arr[[-3,-5,-7]] #返回 5 ,4,1行
+
+#数组转置
+arr = np.arange(15).reshape((3,5))
+arr
+arr.T
+arr = np.random.randn(6,3)
+np.dot(arr.T,arr)
+arr = np.arange(16).reshape((2,2,4))
+arr
+arr.transpose((1,0,2))
+arr.swapaxes(1,2)
+
+#通用函数
+arr = np.arange(10)
+np.sqrt(arr)
+np.exp(arr)
+
+x= np.random.randn(8)
+y= np.random.randn(8)
+x
+y
+np.maximum(x,y)
+
+arr = np.random.randn(7)*5
+arr
+np.modf(arr)
+
+
+points = np.arange(-5,5,0.01)
+xs,ys = np.meshgrid(points,points)
+xs
+ys
+import matplotlib.pyplot as plt
+z = np.sqrt(xs ** 2 +ys ** 2)
+z
+plt.imshow(z,cmap=plt.cm.gray)
+plt.colorbar()
+plt.title("image plot of $\sqrt(x^2+y^2)$ for a grid of values")
