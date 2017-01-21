@@ -204,13 +204,101 @@ df.idxmax()
 df.cumsum()
 df.describe()
 
+#相关系数 协方差
 import pandas.io.data as web
 all_data = {}
 for ticker in ['AAPL','IBM','MSFT','GOOG']:
     all_data[ticker] = web.get_data_yahoo(ticker,'1/1/2000','1/1/2010')
-    
+
 price = DataFrame({tic:data['Adj Close']
-                   for tic, data in all_data.iteritems()})
+                   for tic, data in all_data.items()})
 
 volume = DataFrame({tic: data['Volume']
-                    for tic, data in all_data.iteritems()})
+                    for tic, data in all_data.items()})
+returns = price.pct_change() #百分数变换
+returns.MSFT.corr(returns.IBM) #计算两组数据的相关系数
+returns.MSFT.cov(returns.IBM) #计算两组数据的协方差
+
+returns.corr() #计算各列的相关系数
+returns.cov() #计算各列的协方差
+
+returns.corrwith(returns.IBM) #计算各列与另外一个知道的series或dataframe之间的相关系数
+returns.corrwith(volume)
+
+#唯一值、值计数以及成员资格
+obj = Series(['c','a','d','a','a','b','b','c','c'])
+obj.unique()
+obj.value_counts()
+pd.value_counts(obj.values,sort=False)
+uniques = obj.unique()
+uniques[1] = 'f'
+mask = obj.isin(uniques)
+
+data = DataFrame({'Qu1':[1,2,2,3,4],
+                  'Qu2':[2,3,1,3,4],
+                  'Qu3':[1,5,2,4,4]})
+result = data.apply(pd.value_counts).fillna(0)
+result
+
+#缺失值处理
+string_data = Series(['aardvark','artichoke',np.nan,'avocado'])
+string_data
+
+string_data[0] = None
+string_data.isnull()
+string_data.notnull()
+
+data = Series([1,np.nan,3.5,np.nan,7])
+data.dropna()
+data = DataFrame([[1.,6.5,3.],[1,np.nan,np.nan],
+                 [np.nan,np.nan,np.nan],[np.nan,6.5,3.]])
+data
+data.dropna(how='all')
+data.dropna(how='all',axis=1)
+
+df = DataFrame(np.random.randn(7,3))
+df
+df.ix[:4,1] = np.nan
+df.ix[:2,2] = np.nan
+df
+df.dropna()
+df.dropna(thresh=3)
+
+df.fillna(0)
+df.fillna({1:0.5,2:-1})
+
+#层次化索引
+data = Series(np.random.randn(10),index=[['a','a','a','b','b','b','c','c','d','d'],
+              [1,2,3,1,2,3,1,2,2,3]])
+data
+data.index
+data[['b','d']]
+data[:,2]
+
+data.unstack()
+data.unstack().stack()
+
+frame = DataFrame(np.arange(12).reshape((4,3)),
+                  index = [['a','a','b','b'],[1,2,1,2]],
+                   columns = [['Ohio','Ohio','Colorado'],
+                              ['Green','Red','Green']])
+frame
+frame.index.names = ['key1','key2']
+frame.columns.names = ['state','color']
+frame
+MultiIndex.from_arrays([['Ohio','Ohio','Colorado'],['Green','Red','Green']],
+                       names = ['state','color'])
+
+frame.swaplevel('key1','key2')
+frame.sortlevel(1)
+frame.swaplevel(0,1).sortlevel(0)
+frame.sum(level='key2')
+frame.sum(level = 'color',axis = 1)
+
+frame2 = frame.stack()
+frame3 = frame2.stack()
+frame3
+frame3.unstack('key1')
+frame3.reset_index()
+
+
