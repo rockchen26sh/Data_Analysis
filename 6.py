@@ -76,6 +76,7 @@ siblings
 #XML和HTML
 from lxml.html import parse
 from urllib.request import urlopen
+from urllib.request import requests
 parsed = parse(urlopen('http://finance.yahoo.com/q/op?s=AAPL+Options'))
 doc = parsed.getroot()
 links = doc.findall('.//a')
@@ -89,3 +90,5 @@ urls
 tables = doc.findall('.//table')
 calls = tables
 rows = calls.findall('.//tr')
+
+
