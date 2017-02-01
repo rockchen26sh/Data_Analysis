@@ -23,7 +23,7 @@ for year in years:
     frame = pd.read_csv(path,header=None,names = col)
     frame['year'] = year
     total_names.append(frame)
-
+total_names
 #合并data_frame
 total_names = pd.concat(total_names,ignore_index=True)#按行组合data_frame
 #各年出生人数
